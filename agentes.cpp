@@ -13,7 +13,8 @@ int main(void) {
 	ofstream topology("data/topologia.txt");
 	ofstream mipsframe("data/mips.txt");
 
-    for (int n_simul=0; n_simul<10 ; n_simul++){
+
+    for (int n_simul=0; n_simul<20 ; n_simul++){
 
     	ofstream anim_simul("data/anim_simulacion_" + to_string(n_simul) + ".txt");
     	n_inmunes = n_simul;

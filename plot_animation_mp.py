@@ -8,10 +8,11 @@ from matplotlib.lines import Line2D
 from tqdm import tqdm, trange
 import os
 
+import concurrent.futures
 
 
 colores = ["blue", "red", "green", "black"]
-archivos = [f"data/anim_simulacion_{i}.txt" for i in range(1,10)]
+archivos = [f"data/anim_simulacion_{i}.txt" for i in range(10)]
 # ==============================================================================#
 # Animacion
 # ==============================================================================#
@@ -92,9 +93,19 @@ def trayectoria(archivo, n_sim, tpause=0.01):
             mkdir_flag = False
 
         plt.savefig(f"video/video_{n_sim}/pic{i}.png", dpi=70)
-
+    return f"{n_sim} completed"
 
 
 if __name__ == "__main__":
-    for n_sim, file in enumerate(archivos):
-        trayectoria(file, n_sim)
+
+    from multiprocessing import freeze_support
+
+    freeze_support()
+
+    results = []
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for n_sim, file in enumerate(archivos):
+            results.append(executor.submit(trayectoria(file, n_sim)))
+    
+        for f in concurrent.futures.as_completed(results):
+            print(f.result())
