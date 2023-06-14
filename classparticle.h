@@ -49,9 +49,10 @@ const double v_min    = 0.01,
 //gen_spaceerador de números aleatorios entre 0 y 1//
 /*=======================================================================================*/
 // Space dynamic Random Number gen_spaceerator
-mt19937::result_type seed_space =  static_cast<unsigned>(chrono::high_resolution_clock::now().time_since_epoch().count());
+mt19937::result_type seed_space = static_cast<unsigned>(chrono::high_resolution_clock::now().time_since_epoch().count());
 mt19937 gen_space(seed_space);                       
 uniform_real_distribution<double> dis_space(0., 1.);
+
 // State dynamic Random Number gen_spaceerator
 mt19937::result_type seed_sir = 1613073522;
 mt19937 gen_sir(seed_sir); 
@@ -186,6 +187,21 @@ double distance1(double dx, double dy){return sqrt(pow(dx, 2) + pow(dy, 2));}
 /* Interact */
 /*=======================================================================================*/
 bool interact(particle A, particle B){ return (distance(A,B)<diameter);} 
+
+//==================================================================================//
+/* File printer */
+//==================================================================================//
+void print_simulation_parameters(ofstream &file)
+{
+    file << "L               = " << L                     << endl;
+    file << "N               = " << N                     << endl;
+    file << "dt              = " << delta_time            << endl;
+    file << "active_vel      = " << active_velocity       << endl;
+    file << "tau Rotation L  = " << alpha                 << endl;
+    file << "tau_t           = " << tau_t                 << endl;
+    file << "tau_i           = " << tau_i                 << endl;
+    file << "tau_r           = " << tau_r                 << endl;
+}
 
 /* Evolution time step function of the particle */
 /*=======================================================================================*/
