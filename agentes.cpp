@@ -7,52 +7,41 @@ using namespace std;
 
 int main(void) {
 
-
     ofstream states("data/evolution.txt"); //infect, refrect, sanos, tiempo.	
 	ofstream pico("data/imax.txt");
 	ofstream epid("data/epid.txt");
 	ofstream topology("data/topologia.txt");
 	ofstream mipsframe("data/mips.txt");
 
-
     for (int n_simul=0; n_simul<20; n_simul++) {
 
+    	int start_s=clock();
+
+    	n_inmunes = n_simul;
+
+    	/* Seeding rng */
+    	gen_space.seed(seed_space);
+    	gen_sir.seed(seed_sir);
+
+    	/* Files of n_simul */
     	ofstream anim_simul("data/anim_simulacion_" + to_string(n_simul) + ".txt");
 		ofstream epid_simul("data/epid_"            + to_string(n_simul) + ".txt");
 		ofstream topology_simul("data/topologia_"	+ to_string(n_simul) + ".txt");
 
-    	n_inmunes = n_simul;
-
-    	gen_space.seed(seed_space);
-    	gen_sir.seed(seed_sir);
-
     	cout << endl;
-    	
-    	int start_s=clock();
-
     	cout << "--------------------------------------" << endl;
     	cout << "simulacion: " << n_simul << endl;
     	cout << "--------------------------------------" << endl;
-
-
     	cout << "Semillas: "  << seed_space << endl;
-    	cout << "Semillas: "  << seed_sir << endl;
+    	cout << "Semillas: "  << seed_sir   << endl;
 
 		/*=======================================================================================*/
 	    /* Declaración de variables   */
 		/*=======================================================================================*/
-	    vector<particle> system,system_new; //Vector que contiene las particulas y su información relevante.
-	    vector<bool>     inter,             //Flag de iteracción para la función evolución. 
-	                     inter_old;         //Nos avisa cuándo terminó la interacción.    
+	    vector<particle> system, system_new; //Vector que contiene las particulas y su información relevante.
+	    vector<bool>     inter,              //Flag de iteracción para la función evolución. 
+	                     inter_old;          //Nos avisa cuándo terminó la interacción.    
 
-	    int num_infected   = 0, 
-	        num_refractary = 0, 
-	        num_sane       = 0;               
-	    
-	    vector<vector<set<int>>> box; //Cuadriculas de set.
-	    
-	    int num_boxes=floor(L);  // Cantidad de cuadrículas en un lado.
-	    
 	    /* Definimos un vector booleano de interacción */
 	    inter.resize(N);
 	    inter_old.resize(N);
@@ -62,10 +51,16 @@ int main(void) {
 	        inter_old[i]=false;
 	    }
 
+	    int num_infected   = 0, 
+	        num_refractary = 0, 
+	        num_sane       = 0;               
 
 	    /*========================================================================================================================*/
-	    /*Crafting the grid of the square LxL. Each box has side=1 */	    
-	    box.resize(num_boxes);
+	    /*Crafting the grid of the square LxL. Each box has side=1 */
+	    /*========================================================================================================================*/
+	    vector<vector<set<int>>> box; //Cuadriculas de set.
+	    int num_boxes=floor(L);  // Cantidad de cuadrículas en un lado.
+		box.resize(num_boxes);
 	    for (int i=0; i<box.size(); i++) box[i].resize(num_boxes);
 
 	    /*==========================================*/
@@ -109,7 +104,6 @@ int main(void) {
 	        if (A.is_refractary()) num_refractary++;
 	        
 	        system.push_back(A); //Si fue aceptada la guardamos en el sistema de partículas. 
-        
 	    } //cierra el for de generacion de partículas
 
 	   // Agregarmos las primeras infectadas
@@ -127,10 +121,10 @@ int main(void) {
 	    cout << "refractarias iniciales = "  << num_refractary << endl;
 	    cout << "Sanas iniciales        = "  << num_sane       << endl;
 	    cout << endl;
+
 	    /*========================================================================================================================*/
 	    /*Declaración de variables para la evolución del sistema*/
 	    /*========================================================================================================================*/
-
 	    double time=time_i;
 
 	    int contador1=0, //Cantidad de interacciones dobles
@@ -151,7 +145,6 @@ int main(void) {
 	    bool bandera      = false; //para  guardar anim_simulación
 		bool mips_search  = false; //sarch mips	 
 	    int frame_counter = 0;  
-
 
 		while(num_infected>0){
 	            contador3++; //Cantidad de while
@@ -181,16 +174,14 @@ int main(void) {
 	                        } // if box isn't empty.
 	                    } // for m.
 	                } // for l.
-
 	                /************************************Fin de chequeo de interacciones******************************************/
-	                
 	                system_new[i]=evolution(system, index, inter[i]); //Evolución del sistema.
 	                contador2++; // Cantidad de evoluciones.        	
 	            } //cierra el for de n particulas
-
 	            
 	            forn(i,0,N){
 	                if ( contador3 %  10 == 0 ) bandera = true; //si pongo false apago la anim_simulación. 
+                	
                 	if (bandera) {
                     	anim_simul << system_new[i].x << " ";
                     	anim_simul << system_new[i].y << " ";                    
@@ -215,11 +206,10 @@ int main(void) {
                 	if(system_new[i].is_inmune()) {
 						if (bandera) {anim_simul << 3 << endl; bandera=false;}
                 	}
+	            } // for de particulas-escritura de datos
 
-	            } //for de particulas-escritura de datos
-
+	            // Imax track
 	      		if (i_max < num_infected) {
-
 	      			frame_counter++;
 	      			i_max = num_infected; 
 	      			t_imax = time;
@@ -235,13 +225,11 @@ int main(void) {
 	      			}
 	      		} //if i_max-frame_mips
 
-
 	            /*Estabilzamos el set*/
 	            for(int j=0; j<N; j++){
 	                if ( box[floor(system_new[j].x)][floor(system_new[j].y)].find(j)==box[floor(system_new[j].x)][floor(system_new[j].y)].end() ){
 	                    box[floor(system[j].x)][floor(system[j].y)].erase(j);
 	                    box[floor(system_new[j].x)][floor(system_new[j].y)].insert(j);
-
 	                }
 	            } // cierra el for j.
 
@@ -260,6 +248,7 @@ int main(void) {
 	            	epid_simul << n_simul        << endl;
 	            }
 	            /*=====================================*/
+
 	            system=system_new; 
 
 	            forn(i,0,N) {
@@ -267,6 +256,7 @@ int main(void) {
 	            		if (system[elem].is_sane()) R0_set[i].erase(elem);
 	            	} // for auto
 	            } // forn	          	
+
 		} //cierra el while
 
 		/*=====================================*/
@@ -308,7 +298,7 @@ int main(void) {
 	    	}
 	    }
 
-	    for(auto elem: last_set) {topology << elem << endl;}
+	    for(auto elem: last_set) {topology       << elem << endl;}
 	    for(auto elem: last_set) {topology_simul << elem << endl;}
 
 		forn(i,0,N){
@@ -326,16 +316,14 @@ int main(void) {
 	    		topology_simul << endl;
 	    	}	    	
 	    }
-
 		/*=======================================================================================*/
-	    cout << "size of epidemic = " << epidemy_size + first_set.size() << endl;
-	    cout << endl;
-
+	    cout   << "size of epidemic = " << epidemy_size + first_set.size() << endl << endl;
+	    
 	    states << num_refractary << " ";
-	    states << time << endl;
+	    states << time   		 << endl;
 
-	    pico << i_max  << " ";
-	    pico << t_imax << endl;
+	    pico   << i_max  		 << " ";
+	    pico   << t_imax 		 << endl;
 
 		/*=======================================================================================*/
 	    /*Escritura de Resultados*/
@@ -344,7 +332,6 @@ int main(void) {
 	    int cont_inmunes=0, cr=0, ci=0, cs=0 ;
 
 	    for (int i=0; i<N; i++){
-
 	        if(system[i].is_inmune())     cont_inmunes++;
 	        if(system[i].is_refractary()) cr++;
 	        if(system[i].is_infected())   ci++;
@@ -352,13 +339,11 @@ int main(void) {
 	    }
 	    
 	    cout << "Cantidad de agentes = " << cont_inmunes + cr + ci + cs << endl;
-
 	    cout << "Refract = " <<  cr           << endl;
 	    cout << "Infect  = " <<  ci           << endl;
 	    cout << "Sanos   = " <<  cs           << endl;
 	    cout << "Inmunes = " << cont_inmunes  << endl;
 	    cout << endl;
-
 	    cout <<"Time in min:" << (((stop_s-start_s)/double(CLOCKS_PER_SEC)*1000)/1000)/60 <<endl;
 	    cout << "maximos: " << frame_counter << endl;
 

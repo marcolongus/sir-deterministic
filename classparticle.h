@@ -146,64 +146,46 @@ double distance(particle A, particle B){
 }
 
 double distance_x(particle A, particle B){
-
         double x1,x2,res;
         int j=0;
-
         vector<double> dx;
         dx.resize(3,0);
-
         res = infinity;
         x2 = B.x;
-
         for(int i=-1;i<2;i++){
-
             x1 = A.x + i*L; 
             dx[i+1]=x1-x2;
-
             if (abs(dx[i+1]) < res ) {
-
                 res=  abs(dx[i+1]);
                 j=i;   
             } //if           
         }//for
-
         return dx[j+1];
 }
 
 double distance_y(particle A, particle B){
-    
         double y1,y2,res;
         int j=0;
-
         vector<double> dy;
         dy.resize(3,0);
-
         res = infinity;
         y2 = B.y;
-
         for(int i=-1;i<2;i++){
-
             y1 = A.y + i*L; 
             dy[i+1]=y1-y2;
-
             if (abs(dy[i+1]) < res ) {
-
                 res=  abs(dy[i+1]);
                 j=i;   
             } //if       
         }//for
-
         return dy[j+1];
 }
 
 double distance1(double dx, double dy){return sqrt(pow(dx, 2) + pow(dy, 2));}
-
 /*=======================================================================================*/
 /* Interact */
 /*=======================================================================================*/
 bool interact(particle A, particle B){ return (distance(A,B)<diameter);} 
-
 
 /* Evolution time step function of the particle */
 /*=======================================================================================*/

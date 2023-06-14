@@ -9,7 +9,7 @@ from tqdm import tqdm, trange
 import os
 
 colores = ["blue", "red", "green", "black"]
-archivos = [f"data/anim_simulacion_{i}.txt" for i in range(1,10)]
+archivos = [f"data/sim_1/anim_simulacion_{i}.txt" for i in range(1, 20)]
 # ==============================================================================#
 # Animacion
 # ==============================================================================#
