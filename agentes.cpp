@@ -7,16 +7,20 @@ using namespace std;
 
 int main(void) {
 
-    ofstream states(archivo); //En este archivo guardamos #infect, refrect, sanos y tiempo.	
-	ofstream pico(archivo1);
-	ofstream epid(archivo2);
+
+    ofstream states("data/evolution.txt"); //infect, refrect, sanos, tiempo.	
+	ofstream pico("data/imax.txt");
+	ofstream epid("data/epid.txt");
 	ofstream topology("data/topologia.txt");
 	ofstream mipsframe("data/mips.txt");
 
 
-    for (int n_simul=0; n_simul<20 ; n_simul++){
+    for (int n_simul=0; n_simul<20; n_simul++) {
 
     	ofstream anim_simul("data/anim_simulacion_" + to_string(n_simul) + ".txt");
+		ofstream epid_simul("data/epid_"            + to_string(n_simul) + ".txt");
+		ofstream topology_simul("data/topologia_"	+ to_string(n_simul) + ".txt");
+
     	n_inmunes = n_simul;
 
     	gen_space.seed(seed_space);
@@ -27,7 +31,7 @@ int main(void) {
     	int start_s=clock();
 
     	cout << "--------------------------------------" << endl;
-    	cout <<"simulacion: "<< n_simul << endl;
+    	cout << "simulacion: " << n_simul << endl;
     	cout << "--------------------------------------" << endl;
 
 
@@ -241,28 +245,34 @@ int main(void) {
 	                }
 	            } // cierra el for j.
 
-	            /**********************************************************************************************************************************/
-
-	            if (contador3 % 1 == 0){
+	            /*=====================================*/
+	            if (contador3 % 1 == 0) {
 	            	epid << num_sane       << " ";
 	            	epid << num_infected   << " ";
 	            	epid << num_refractary << " ";	            	
 	            	epid << time           << " ";
 	            	epid << n_simul        << endl;
-	            }
 
+					epid_simul << num_sane       << " ";
+	            	epid_simul << num_infected   << " ";
+	            	epid_simul << num_refractary << " ";	            	
+	            	epid_simul << time           << " ";
+	            	epid_simul << n_simul        << endl;
+	            }
+	            /*=====================================*/
 	            system=system_new; 
 
-	            forn(i,0,N){
-	            	for(auto elem: R0_set[i]){
+	            forn(i,0,N) {
+	            	for(auto elem: R0_set[i]) {
 	            		if (system[elem].is_sane()) R0_set[i].erase(elem);
-	            	}// for auto
+	            	} // for auto
 	            } // forn	          	
-		}//cierra el while
+		} //cierra el while
 
+		/*=====================================*/
 	    /*Escritura de nodos y vertices*/
-
-	    //for para sacar repetidas por colisión múltiple.
+		/*=====================================*/
+	    // for para sacar repetidas por colisión múltiple.
 	    forn(i, 0, N) {
 	    	bool flag=true;
 	    	int multiple_inter=0;	    	
@@ -281,36 +291,39 @@ int main(void) {
 	    double R0_first_gen=0;	    
 
 	    //For para agregar las que no contagian a nadie. 
-	    forn(i,0,N){
+	    forn(i,0,N) {
 	    	bool flag = R0_set[i].empty();
 	    	if (flag){
-	    		//Las de la última generación que no producen descendencia. 
-	    		forn(j,0,N){
+	    		// Las de la última generación que no producen descendencia. 
+	    		forn(j,0,N) {
 	    			if ( !(R0_set[j].find(i) == R0_set[j].end()) ) {
 	    				last_set.insert(i);
 	    			}		    		
 	    		}
 	    		// Las de la primera generación que no producen descendencia. 
 	    		if ( !(first_set.find(i) == first_set.end()) )  {
-	    			topology << i << endl;	    			
+	    			topology << i << endl;
+	    			topology_simul << i << endl;	    			
 	    		}    		
 	    	}
 	    }
 
 	    for(auto elem: last_set) {topology << elem << endl;}
+	    for(auto elem: last_set) {topology_simul << elem << endl;}
 
 		forn(i,0,N){
 			if(!R0_set[i].empty()){
-
 				R0_mean+=R0_set[i].size();
 				n_R0++;
-				
-				topology << i << " ";			
+				topology << i << " ";
+				topology_simul << i << " ";			
 	    		for (auto elem: R0_set[i]) {
 	    			topology << elem  <<" ";
+					topology_simul << elem << " ";			
 	    			epidemy_size++;	    		
 	    		}
 	    		topology << endl;
+	    		topology_simul << endl;
 	    	}	    	
 	    }
 
@@ -350,6 +363,8 @@ int main(void) {
 	    cout << "maximos: " << frame_counter << endl;
 
 	    anim_simul.close();
+	    epid_simul.close();
+	    topology_simul.close();
     } //Simulaciones
   
     states.close();

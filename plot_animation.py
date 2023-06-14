@@ -8,8 +8,6 @@ from matplotlib.lines import Line2D
 from tqdm import tqdm, trange
 import os
 
-
-
 colores = ["blue", "red", "green", "black"]
 archivos = [f"data/anim_simulacion_{i}.txt" for i in range(1,10)]
 # ==============================================================================#
@@ -17,7 +15,7 @@ archivos = [f"data/anim_simulacion_{i}.txt" for i in range(1,10)]
 # ==============================================================================#
 def trayectoria(archivo, n_sim, tpause=0.01):
     N = 100
-    L = 30
+    L = 50
     nsteps = np.loadtxt(archivo, usecols=0).size / N
     fig, ax = plt.subplots()
     loop_range = int(nsteps)

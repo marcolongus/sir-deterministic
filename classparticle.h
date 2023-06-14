@@ -3,7 +3,7 @@ using namespace std;
 /* Declaración de constantes */
 /*=======================================================================================*/
 const int    N = 100;   // Number of particles.
-const double L = 30;    // Lado del cuadrado
+const double L = 50;    // Lado del cuadrado
 
 const string archivo  = "data/evolution.txt"; 
 const string archivo1 = "data/imax.txt";
@@ -48,15 +48,13 @@ const double v_min    = 0.01,
 /*=======================================================================================*/
 //gen_spaceerador de números aleatorios entre 0 y 1//
 /*=======================================================================================*/
-
 // Space dynamic Random Number gen_spaceerator
-mt19937::result_type seed_space = chrono::high_resolution_clock::now().time_since_epoch().count();
-mt19937 gen_space(seed_space);                       //Standard mersenne_twister_engine seeded time(0)
-uniform_real_distribution<double> dis_space(0., 1.); // dis(gen_space), número aleatorio real entre 0 y 1.
-
+mt19937::result_type seed_space =  static_cast<unsigned>(chrono::high_resolution_clock::now().time_since_epoch().count());
+mt19937 gen_space(seed_space);                       
+uniform_real_distribution<double> dis_space(0., 1.);
 // State dynamic Random Number gen_spaceerator
 mt19937::result_type seed_sir = 1613073522;
-mt19937 gen_sir(seed_sir); //Standard mersenne_twister_engine seeded time(0)
+mt19937 gen_sir(seed_sir); 
 uniform_real_distribution<double> dis_sir(0., 1.); 
 
 /*=======================================================================================*/
@@ -87,6 +85,7 @@ class particle{
 };
 /*=======================================================================================*/
 /* Constructor for a default particle */
+/*=======================================================================================*/
 particle::particle(){
     x=0;
     y=0;
@@ -95,7 +94,7 @@ particle::particle(){
 }
 /*=======================================================================================*/
 /* Constructor of a partcile in a given phase-state (x,p) of the system */
-
+/*=======================================================================================*/
 particle::particle(double x1, double y1, double vel, double ang){
     x=x1;
     y=y1;
@@ -105,7 +104,7 @@ particle::particle(double x1, double y1, double vel, double ang){
 }
 /*=======================================================================================*/
 /* Create a particle in tha random phase-state  */
-
+/*=======================================================================================*/
 particle create_particle(void){
     double x,y,velocity,angle;
     x=dis_space(gen_space) * L;
@@ -127,13 +126,13 @@ particle create_particle(void){
 
 /*=======================================================================================*/
 /* Function for the boundary condition  and Integer boundary condition function */
-double b_condition(double a) {return fmod((fmod(a, L) + L), L);}
-
-int my_mod(int a, int b) {return ((a % b) + b) % b;}
 /*=======================================================================================*/
+double b_condition(double a) {return fmod((fmod(a, L) + L), L);}
+int my_mod(int a, int b) {return ((a % b) + b) % b;}
 
 /*=======================================================================================*/
 /*Distance between particles function.*/
+/*=======================================================================================*/
 double distance(particle A, particle B){
         double x1,x2,y1,y2,res;
         res = infinity;
@@ -145,7 +144,7 @@ double distance(particle A, particle B){
         }
         return sqrt(res);
 }
-/*=======================================================================================*/
+
 double distance_x(particle A, particle B){
 
         double x1,x2,res;
@@ -198,22 +197,18 @@ double distance_y(particle A, particle B){
         return dy[j+1];
 }
 
-double distance1(double dx, double dy){
-    
-    double d=sqrt( pow(dx,2) + pow(dy,2) );
-
-    return d;
-}
-
-
-/* Interact */
-bool interact(particle A, particle B){ return (distance(A,B)<diameter);} //repensar esta función
+double distance1(double dx, double dy){return sqrt(pow(dx, 2) + pow(dy, 2));}
 
 /*=======================================================================================*/
+/* Interact */
+/*=======================================================================================*/
+bool interact(particle A, particle B){ return (distance(A,B)<diameter);} 
+
+
 /* Evolution time step function of the particle */
 /*=======================================================================================*/
-
 /* Campo de interacción */
+/*=======================================================================================*/
 vector<double> campo( vector<particle> system, vector<int> &index){
  
     vector<double> field; //Campo de salida
@@ -243,6 +238,8 @@ vector<double> campo( vector<particle> system, vector<int> &index){
 }
 
 /*=======================================================================================*/
+/* Particle evolution function*/
+/*=======================================================================================*/
 particle evolution(vector<particle> &system, vector<int> &index, bool inter) {
     particle A=system[index[0]];
     bool flag=true; //Flag de infección usada en la dinámica de la epidemia.
@@ -259,7 +256,7 @@ particle evolution(vector<particle> &system, vector<int> &index, bool inter) {
         A.x = b_condition(A.x + A.velocity*cos(A.angle)*delta_time);
         A.y = b_condition(A.y + A.velocity*sin(A.angle)*delta_time);
     }
-    /*Dinámica de la epedemia*/
+    /* Dinámica de la epedemia */
     for (int i=1; i<index.size(); i++){
         if (A.is_sane() && system[index[i]].is_infected()) {
             A.set_infected();
