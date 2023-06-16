@@ -16,7 +16,7 @@ int main(void) {
 
 	print_simulation_parameters(simulation_parameters);
 
-	for (int simulation=100; simulation<200; simulation++) {
+	for (int simulation=0; simulation<200; simulation++) {
 		cout << endl;
 		cout << "---------------------------------------------------------" << endl;
 		cout << "simulacion: " << simulation << endl;
