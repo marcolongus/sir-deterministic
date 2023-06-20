@@ -2,8 +2,8 @@ using namespace std;
 /*=======================================================================================*/
 /* Declaración de constantes */
 /*=======================================================================================*/
-const int    N = 100;   // Number of particles.
-const double L = 50;    // Lado del cuadrado
+const int    N = 1000;   // Number of particles.
+const double L = 150;    // Lado del cuadrado
 
 const string archivo  = "data/evolution.txt"; 
 const string archivo1 = "data/imax.txt";

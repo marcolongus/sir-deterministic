@@ -14,9 +14,7 @@ int main(void) {
 	ofstream mipsframe("data/mips.txt");
 
     for (int n_simul=0; n_simul<20; n_simul++) {
-
     	int start_s=clock();
-
     	n_inmunes = n_simul;
 
     	/* Seeding rng */
