@@ -13,7 +13,7 @@ def outbreak_detector(simulation):
 #=======================================================#
 # Data definition
 #=======================================================#
-data = np.loadtxt("data/sim_batch_uniform/evolution.txt")
+data = np.loadtxt("data/sim_batch_exp/evolution.txt")
 
 size = data[:, 0]
 inactive = np.array([i for i in range(0, 20)])
@@ -25,6 +25,7 @@ for i in range(200):
 	if size[i*20:(i+1)*20][0] >= 5:
 		threshold_count += 1
 
+print("threshold_count:", threshold_count )
 size_matrix = np.zeros(shape=(threshold_count, 20))
 
 print(100 * "-")
@@ -82,12 +83,26 @@ plt.plot(inactive, mean_size)
 plt.legend()
 plt.show()
 
+
+#=======================================================#
+# Histogram
+#=======================================================#
 to_histogram = []
 for element in outbreaks_histogram:
 	for outbreak_element in element:
 		to_histogram.append(outbreak_element)
 
-print(to_histogram)
+bins = [i for i in range(80)]
+histo = np.histogram(to_histogram, bins=bins)
+bins_result = histo[1]
 
-plt.hist(to_histogram)
+# print(bins_result)        
+# print(histo)
+
+plt.hist(to_histogram, bins=bins_result, alpha=0.7, edgecolor="black")
+        
+plt.xticks(fontsize=15)
+plt.yticks(fontsize=15)
+
+plt.tight_layout()
 plt.show()

@@ -16,7 +16,7 @@ int main(void) {
 
 	print_simulation_parameters(simulation_parameters);
 
-	for (int simulation=0; simulation<200; simulation++) {
+	for (int simulation=0; simulation<50; simulation++) {
 		cout << endl;
 		cout << "---------------------------------------------------------" << endl;
 		cout << "simulacion: " << simulation << endl;
@@ -33,7 +33,7 @@ int main(void) {
 	    
 	    for (int n_simul=0; n_simul<20; n_simul++) {
 	    	int start_s=clock();
-	    	n_inmunes = n_simul;
+	    	n_inmunes = 10 * n_simul;
 
 	    	/* Seeding rng */
 	    	gen_space.seed(seed_space);
@@ -113,7 +113,7 @@ int main(void) {
 		        } // Si accepted false, el while vuelve a generar una partícula
 
 		        if(i < n_inmunes) A.set_inmune();// Agrego n_inmunes
-		        if(i < 1) A.set_infected();
+		        if(i < 10) A.set_infected();
 
 		        if (A.is_infected())   num_infected++;
 		        if (A.is_sane())       num_sane++;
