@@ -8,7 +8,7 @@ os.system('color')
 compiler   = "gcc -o "
 target     = "agentes "
 program    = "agentes.cpp "
-program    = "agentes_n_simulations.cpp "
+program    = "agentes_noise.cpp "
 flags      = "-lstdc++ -lm " # -Wall " #-Werrors
 opt_flags  = "-O3 -march=native -fopenmp "
 

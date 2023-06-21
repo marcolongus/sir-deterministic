@@ -16,7 +16,7 @@ def get_matrix_size(size: np.array):
     for i in range(200):
         if size[i * 20 : (i + 1) * 20][0] >= 5:
             threshold_count += 1
-    #print("Threshold_count:", threshold_count )
+    print("threshold_count:", threshold_count )
     return threshold_count
 
 def outbreak_search(size, size_matrix):
