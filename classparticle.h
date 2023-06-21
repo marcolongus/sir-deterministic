@@ -113,8 +113,8 @@ particle create_particle(void){
     angle=dis_space(gen_space) * dos_Pi;
 
     //velocity=-active_velocity*log(1.-dis_space(gen_space)); //distribución exponencial
-    velocity= pow(dis_space(gen_space) * (pow(v_max,1-k_powerl) - pow(v_min,1-k_powerl))+pow(v_min,1-k_powerl), 1./(1.-k_powerl)); //power_law
-    //velocity = active_velocity;
+    //velocity= pow(dis_space(gen_space) * (pow(v_max,1-k_powerl) - pow(v_min,1-k_powerl))+pow(v_min,1-k_powerl), 1./(1.-k_powerl)); //power_law
+    velocity = active_velocity;
     
     particle A(x,y,velocity,angle);
     
