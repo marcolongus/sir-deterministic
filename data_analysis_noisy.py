@@ -35,7 +35,6 @@ def get_size_matrix(size, threshold=5, n_simulations=29, n_batch=50):
 #==================================================================================#
 # Main
 #==================================================================================#
-
 data = np.loadtxt("data/evolution.txt")
 size_check = data[1:, [0,-1]]
 size = data[1:,0]
